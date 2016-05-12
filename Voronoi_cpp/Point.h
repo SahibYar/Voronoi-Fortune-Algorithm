@@ -126,6 +126,26 @@ public:
 	}
 
 	/// <summary>
+	/// Scale one vector
+	/// </summary>
+	static Point Scalar_Multiplication(Point A, double B)
+	{
+		Point Erg(A.Dimension());
+		int i;
+		for (i = 0; i < A.Dimension(); i++)
+			Erg.data[i] = A.data[i] * B;
+		return Erg;
+	}
+
+	/// <summary>
+	/// Scale one vector
+	/// </summary>
+	static Point Scalar_Multiplication(double A, Point B)
+	{
+		return Point::Scalar_Multiplication(B, A);
+	}
+
+	/// <summary>
 	/// Subtract two Points
 	/// </summary>
 	Point operator-(const Point &b)
