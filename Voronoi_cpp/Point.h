@@ -138,6 +138,20 @@ public:
 	}
 
 	/// <summary>
+	/// Get the scalar product of two vectors
+	/// </summary>
+	static double Scalar_Product(Point A, Point B)
+	{
+		if (A.Dimension() != B.Dimension())
+			throw new exception("Vectors of different dimension!");
+		double Erg = 0;
+		int i;
+		for (i = 0; i < A.Dimension(); i++)
+			Erg += A.data[i] * B.data[i];
+		return Erg;
+	}
+
+	/// <summary>
 	/// Scale one vector
 	/// </summary>
 	static Point Scalar_Multiplication(double A, Point B)
