@@ -69,6 +69,20 @@ public:
 		for (int i = 0; i < data.size(); i++) data.at(i) *= r;
 	}
 
+	static double Distance(Point a, Point b)
+	{
+		if (a.Dimension() != b.Dimension())
+			return -1;
+
+		double E = 0, D;
+		for (int i = 0; i < a.Dimension(); i++)
+		{
+			D = (a.data[i] - b.data[i]);
+			E += D * D;
+		}
+		return E;
+	}
+
 	string ToString()
 	{
 		string s = "(";
