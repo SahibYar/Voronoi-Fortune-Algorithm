@@ -12,6 +12,11 @@
 class MathTools 
 {
 public:
+	static double Distance(double x1, double y1, double x2, double y2)
+	{
+		return sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+	}
+
 	static int ccw(double P0x, double P0y, double P1x, double P1y, double P2x, double P2y, bool PlusOneOnZeroDegrees)
 	{
 		double dx1, dx2, dy1, dy2;
@@ -159,7 +164,8 @@ public:
 		{
 			if (typeid(C) == typeid(VDataNode))
 				return static_cast<VDataNode*>(C);
-			if (static_cast<VEdgeNode>(C).Cut(ys, x) < 0)
+			VEdgeNode* C_temp = (VEdgeNode*)C;
+			if (C_temp->Cut(ys, x) < 0)
 				C = C->Left();
 			else
 				C = C->Right();
@@ -183,7 +189,8 @@ public:
 		
 		//2. Create the subtree (ONE Edge, but two VEdgeNodes)
 		VoronoiEdge* VE = new VoronoiEdge();
-		VE.LeftData = (VDataNode)C->DataPoint;
+		VDataNode* C_temp = (VDataNode*)C;
+		VE->LeftData = C_temp->DataPoint;
 		VE->RightData = e->DataPoint;
 		VE->VVertexA = Fortune::VVUnknown();
 		VE->VVertexB = Fortune::VVUnknown();
@@ -322,25 +329,25 @@ public:
 		return NULL;
 	}
 
-	static void CleanUpTree(VNode Root)
+	static void CleanUpTree(VNode* Root)
 	{
-		if (Root is VDataNode)
+		if (typeid(Root) == typeid(VDataNode*))
 			return;
-		VEdgeNode VE = Root as VEdgeNode;
-		while (VE.Edge.VVertexB.Equals(Fortune::VVUnknown().data))
+		VEdgeNode* VE = (VEdgeNode*)Root;
+		while (VE->Edge.VVertexB.Equals(Fortune::VVUnknown().data))
 		{
-			VE.Edge.AddVertex(Fortune::VVinfinite());
+			VE->Edge.AddVertex(Fortune::VVinfinite());
 			//				VE.Flipped = !VE.Flipped;
 		}
-		if (VE.Flipped)
+		if (VE->Flipped)
 		{
-			Point T = VE.Edge.LeftData;
-			VE.Edge.LeftData = VE.Edge.RightData;
-			VE.Edge.RightData = T;
+			Point T = VE->Edge.LeftData;
+			VE->Edge.LeftData = VE->Edge.RightData;
+			VE->Edge.RightData = T;
 		}
-		VE.Edge.Done = true;
-		CleanUpTree(Root.Left);
-		CleanUpTree(Root.Right);
+		VE->Edge.Done = true;
+		CleanUpTree(Root->Left());
+		CleanUpTree(Root->Right());
 	}
 
 };
@@ -508,92 +515,116 @@ public:
 	static VoronoiGraph ComputeVoronoiGraph(vector<Point> Datapoints)
 	{
 		priority_queue<VDataEvent> PQ;
-//		BinaryPriorityQueue PQ = new BinaryPriorityQueue();
-		map<int, >
-		Hashtable CurrentCircles = new Hashtable();
-		VoronoiGraph VG = new VoronoiGraph();
-		VNode RootNode = null;
-		foreach(Vector V in Datapoints)
+		map<VDataNode, VCircleEvent> CurrentCircles;
+		VoronoiGraph* VG;
+		VNode* RootNode = NULL;
+
+		for (vector<Point>::iterator i = Datapoints.begin(); i != Datapoints.end(); i++)
 		{
-			PQ.Push(new VDataEvent(V));
+			VDataEvent vd(*i);
+			PQ.push(vd);
 		}
-		while (PQ.Count > 0)
+		while (PQ.size() > 0)
 		{
-			VEvent VE = PQ.Pop() as VEvent;
-			VDataNode[] CircleCheckList;
-			if (VE is VDataEvent)
+			VDataEvent temp = PQ.top();
+			VEvent* VE = &temp;
+			vector<VDataNode*> CircleCheckList;
+
+			if (typeid(VE) == typeid(VDataEvent))
 			{
-				RootNode = VNode.ProcessDataEvent(VE as VDataEvent, RootNode, VG, VE.Y, out CircleCheckList);
+				RootNode = VNode::ProcessDataEvent((VDataEvent*)VE, RootNode, *VG, VE->Y, CircleCheckList);
 			}
-			else if (VE is VCircleEvent)
+			else if (typeid(VE) == typeid(VCircleEvent))
 			{
-				CurrentCircles.Remove(((VCircleEvent)VE).NodeN);
-				if (!((VCircleEvent)VE).Valid)
+				VCircleEvent* VE_temp = (VCircleEvent*)VE;
+				CurrentCircles.erase(VE_temp->NodeN);
+				if (!VE_temp->Valid)
 					continue;
-				RootNode = VNode.ProcessCircleEvent(VE as VCircleEvent, RootNode, VG, VE.Y, out CircleCheckList);
+				RootNode = VNode::ProcessCircleEvent((VCircleEvent*)VE, RootNode, VG, VE->Y, CircleCheckList);
 			}
-			else throw new Exception("Got event of type " + VE.GetType().ToString() + "!");
-			foreach(VDataNode VD in CircleCheckList)
+			else
 			{
-				if (CurrentCircles.ContainsKey(VD))
+				string error_message = "Got event of type ";
+				error_message += typeid(VE).name();
+				error_message += "!";
+				throw new exception(error_message.c_str());
+			}
+
+			for (vector<VDataNode*>::iterator i = CircleCheckList.begin(); i != CircleCheckList.end(); i++) // VDataNode VD in CircleCheckList)
+			{
+				VDataNode VD = **i;
+
+				map<VDataNode, VCircleEvent>::iterator it = CurrentCircles.find(VD);
+				if (it != CurrentCircles.end())
 				{
-					((VCircleEvent)CurrentCircles[VD]).Valid = false;
-					CurrentCircles.Remove(VD);
+					CurrentCircles[VD].Valid = false;
+					CurrentCircles.erase(VD);
 				}
-				VCircleEvent VCE = VNode.CircleCheckDataNode(VD, VE.Y);
-				if (VCE != null)
+				VCircleEvent* VCE = VNode::CircleCheckDataNode(VD, VE->Y);
+				if (VCE != NULL)
 				{
-					PQ.Push(VCE);
-					CurrentCircles[VD] = VCE;
+					PQ.push(*(VDataEvent*)VCE);
+					CurrentCircles[VD] = *VCE;
 				}
 			}
-			if (VE is VDataEvent)
+			if (typeid(VE) == typeid(VDataEvent))
 			{
-				Vector DP = ((VDataEvent)VE).DataPoint;
-				foreach(VCircleEvent VCE in CurrentCircles.Values)
+				VDataEvent VDE_temp = *(VDataEvent*)VE;
+				Point DP = VDE_temp.DataPoint;
+				for (map<VDataNode, VCircleEvent>::iterator i; i != CurrentCircles.end(); i++)
 				{
-					if (MathTools.Dist(DP[0], DP[1], VCE.Center[0], VCE.Center[1]) < VCE.Y - VCE.Center[1] && Math.Abs(MathTools.Dist(DP[0], DP[1], VCE.Center[0], VCE.Center[1]) - (VCE.Y - VCE.Center[1])) > 1e-10)
+
+					VCircleEvent VCE = i->second;
+					if (MathTools::Distance(DP.data[0], DP.data[1], VCE.Center.data[0], VCE.Center.data[1]) < VCE.Y - VCE.Center.data[1] 
+						&& abs(MathTools::Distance(DP.data[0], DP.data[1], VCE.Center.data[0], VCE.Center.data[1]) - (VCE.Y - VCE.Center.data[1])) > 1e-10)
 						VCE.Valid = false;
 				}
 			}
 		}
-		VNode.CleanUpTree(RootNode);
-		foreach(VoronoiEdge VE in VG.Edges)
+		VNode::CleanUpTree(RootNode);
+
+		for (unordered_set<VoronoiEdge>::iterator i = VG->Edges.begin(); i != VG->Edges.end(); i++ )//(VoronoiEdge VE in VG.Edges)
 		{
+			VoronoiEdge VE = *i;
 			if (VE.Done)
 				continue;
-			if (VE.VVertexB == Fortune.VVUnkown)
+			if (VE.VVertexB.Equals(Fortune::VVUnknown().data))
 			{
-				VE.AddVertex(Fortune.VVInfinite);
-				if (Math.Abs(VE.LeftData[1] - VE.RightData[1]) < 1e-10 && VE.LeftData[0] < VE.RightData[0])
+				VE.AddVertex(Fortune::VVinfinite());
+				if (abs(VE.LeftData.data[1] - VE.RightData.data[1]) < 1e-10 && VE.LeftData.data[0] < VE.RightData.data[0])
 				{
-					Vector T = VE.LeftData;
+					Point T = VE.LeftData;
 					VE.LeftData = VE.RightData;
 					VE.RightData = T;
 				}
 			}
 		}
 
-		ArrayList MinuteEdges = new ArrayList();
-		foreach(VoronoiEdge VE in VG.Edges)
+		vector<VoronoiEdge> MinuteEdges;
+		for(unordered_set<VoronoiEdge>::iterator i = VG->Edges.begin(); i != VG->Edges.end(); i++)
 		{
-			if (!VE.IsPartlyInfinite && VE.VVertexA.Equals(VE.VVertexB))
+			VoronoiEdge VE = *i;
+
+			if (!VE.IsPartlyInfinite() && VE.VVertexA.Equals(VE.VVertexB.data))
 			{
-				MinuteEdges.Add(VE);
+				MinuteEdges.push_back(VE);
 				// prevent rounding errors from expanding to holes
-				foreach(VoronoiEdge VE2 in VG.Edges)
+				for (unordered_set<VoronoiEdge>::iterator i2 = VG->Edges.begin(); i2 != VG->Edges.end(); i2++)
 				{
-					if (VE2.VVertexA.Equals(VE.VVertexA))
+					VoronoiEdge VE2 = *i2;
+					if (VE2.VVertexA.Equals(VE.VVertexA.data))
 						VE2.VVertexA = VE.VVertexA;
-					if (VE2.VVertexB.Equals(VE.VVertexA))
+	
+					if (VE2.VVertexB.Equals(VE.VVertexA.data))
 						VE2.VVertexB = VE.VVertexA;
 				}
 			}
 		}
-		foreach(VoronoiEdge VE in MinuteEdges)
-			VG.Edges.Remove(VE);
 
-		return VG;
+		for (vector<VoronoiEdge>::iterator k = MinuteEdges.begin(); k != MinuteEdges.end(); k++)
+			VG->Edges.erase(*k);
+
+		return *VG;
 	}
 };
 #endif
