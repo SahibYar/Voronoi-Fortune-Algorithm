@@ -241,8 +241,7 @@ public:
 		c = VNode::RightDataNode(*b);
 		if (a == NULL || b->Parent() == NULL || c == NULL || !a->DataPoint.Equals(e->NodeL.DataPoint.data) || !c->DataPoint.Equals(e->NodeR.DataPoint.data))
 		{
-//			CircleCheckList = new VDataNode[]{};
-			return Root; // Abbruch da sich der Graph verändert hat
+			return Root;
 		}
 		eu = (VEdgeNode*)b->Parent();
 		CircleCheckList.push_back(a);
@@ -250,8 +249,6 @@ public:
 
 		//1. Create the new Vertex
 		Point VNew(e->Center.data[0], e->Center.data[1]);
-		//			VNew[0] = Fortune.ParabolicCut(a.DataPoint[0],a.DataPoint[1],c.DataPoint[0],c.DataPoint[1],ys);
-		//			VNew[1] = (ys + a.DataPoint[1])/2 - 1/(2*(ys-a.DataPoint[1]))*(VNew[0]-a.DataPoint[0])*(VNew[0]-a.DataPoint[0]);
 		VG->Vertices.insert(VNew);
 
 		//2. Find out if a or c are in a distand part of the tree (the other is then b's sibling) and assign the new vertex
@@ -269,25 +266,7 @@ public:
 			eu->Parent()->Replace(*eu, *eu->Left());
 		}
 		eu->Edge.AddVertex(VNew);
-		//			///////////////////// uncertain
-		//			if(eo==eu)
-		//				return Root;
-		//			/////////////////////
-
-		//complete & cleanup eo
 		eo->Edge.AddVertex(VNew);
-		//while(eo.Edge.VVertexB == Fortune.VVUnkown)
-		//{
-		//    eo.Flipped = !eo.Flipped;
-		//    eo.Edge.AddVertex(Fortune.VVInfinite);
-		//}
-		//if(eo.Flipped)
-		//{
-		//    Vector T = eo.Edge.LeftData;
-		//    eo.Edge.LeftData = eo.Edge.RightData;
-		//    eo.Edge.RightData = T;
-		//}
-
 
 		//2. Replace eo by new Edge
 		VoronoiEdge VE;// = new VoronoiEdge();
@@ -304,7 +283,6 @@ public:
 		eo->Parent()->Replace(*eo, VEN);
 		return Root;
 	}
-
 
 	static VCircleEvent* CircleCheckDataNode(VDataNode n, double ys)
 	{
@@ -439,17 +417,8 @@ public:
 	
 	static double ParabolicCut(double x1, double y1, double x2, double y2, double ys)
 	{
-		//			y1=-y1;
-		//			y2=-y2;
-		//			ys=-ys;
-		//			
 		if (abs(x1 - x2) < 1e-10 && abs(y1 - y2) < 1e-10)
 		{
-			//				if(y1>y2)
-			//					return double.PositiveInfinity;
-			//				if(y1<y2)
-			//					return double.NegativeInfinity;
-			//				return x;
 			throw new exception("Identical datapoints are not allowed!");
 		}
 
