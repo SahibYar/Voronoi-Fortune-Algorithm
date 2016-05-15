@@ -19,5 +19,5 @@ int main()
 	cout << "\t\tVertices";
 	for (list<Point>::iterator i = Result.Vertices.begin(); i != Result.Vertices.end(); i++)
 		cout << "(" << i->data[0] << ", " << i->data[1] << ")\n";
-	return 0;
+	system("pause");
 }

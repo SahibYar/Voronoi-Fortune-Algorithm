@@ -8,6 +8,7 @@ class VEvent
 public:
 	double Y;
 	double X;
+
 	int CompareTo(VEvent obj)
 	{
 		if (Y > obj.Y)

@@ -121,18 +121,19 @@ VoronoiGraph ComputeVoronoiGraph(vector<Point> Datapoints)
 {
 	priority_queue<shared_ptr<VEvent>> PQ;
 	map<VDataNode, VCircleEvent> CurrentCircles;
-	shared_ptr<VoronoiGraph> VG;
+	shared_ptr<VoronoiGraph> VG = make_shared<VoronoiGraph>();
 	shared_ptr<VNode>  RootNode = NULL;
 
 	for (vector<Point>::iterator i = Datapoints.begin(); i != Datapoints.end(); i++)
 	{
 		VDataEvent vd(*i);
-		shared_ptr<VEvent> vev = make_shared<VEvent>(vd);
+		shared_ptr<VEvent> vev = make_shared<VDataEvent>(vd);
 		PQ.push(vev);
 	}
 	while (PQ.size() > 0)
 	{
 		shared_ptr<VEvent> VE = PQ.top();
+		PQ.pop();
 		vector<shared_ptr<VDataNode>> CircleCheckList;
 
 		if (typeid(*VE) == typeid(VDataEvent))
@@ -385,7 +386,7 @@ shared_ptr<VNode> ProcessDataEvent(shared_ptr<VDataEvent> e, shared_ptr<VNode> R
 {
 	if (Root == NULL)
 	{
-		Root = static_pointer_cast<VNode>(make_shared<VDataNode>(e.get()->DataPoint));
+		Root = static_pointer_cast<VNode>(make_shared<VDataNode>(e->DataPoint));
 		CircleCheckList.push_back(shared_ptr<VDataNode>(make_shared<VDataNode>(e->DataPoint)));
 		return Root;
 	}

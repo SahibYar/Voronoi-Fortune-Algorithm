@@ -13,6 +13,12 @@ class VoronoiGraph
 public:
 	list<Point> Vertices;
 	list<VoronoiEdge> Edges;
+
+	VoronoiGraph()
+	{
+		Vertices.empty();
+		Edges.empty();
+	}
 };
 
 #endif
