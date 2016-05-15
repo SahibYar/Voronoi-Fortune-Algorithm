@@ -1,6 +1,6 @@
 #pragma once
 
-#include<unordered_set>
+#include<list>
 using namespace std;
 
 #include"Point.h"
@@ -11,8 +11,8 @@ using namespace std;
 class VoronoiGraph
 {
 public:
-	unordered_set<Point> Vertices;
-	unordered_set<VoronoiEdge> Edges;
+	list<Point> Vertices;
+	list<VoronoiEdge> Edges;
 };
 
 #endif

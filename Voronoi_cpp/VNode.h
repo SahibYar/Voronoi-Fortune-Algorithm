@@ -30,6 +30,7 @@ public:
 		else throw new exception("Child not found!");
 		ChildOld->Parent(NULL);
 	}
+	virtual ~VNode(){}
 };
 
 #endif

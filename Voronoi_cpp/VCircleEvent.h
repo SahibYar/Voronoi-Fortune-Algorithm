@@ -12,6 +12,13 @@ class VCircleEvent : public VEvent
 public:
 	VDataNode NodeN, NodeL, NodeR;
 	Point Center;
+
+	VCircleEvent()
+	{
+		Point p(NAN, NAN);
+		Center = p;
+	}
+
 	double Y()
 	{
 		return sqrt((Center.data[0] - NodeN.DataPoint.data[0]) * (Center.data[0] - NodeN.DataPoint.data[0]) +

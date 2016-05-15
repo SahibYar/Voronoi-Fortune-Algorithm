@@ -29,6 +29,7 @@ public:
 		LeftData = other.LeftData;
 		VVertexA = other.VVertexA;
 		VVertexB = other.VVertexB;
+		return *this;
 	}
 
 	void AddVertex(Point V)

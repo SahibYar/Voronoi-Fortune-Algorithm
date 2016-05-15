@@ -22,6 +22,7 @@ public:
 		else
 			return -1;
 	}
+	virtual ~VEvent() {  }
 };
 
 #endif

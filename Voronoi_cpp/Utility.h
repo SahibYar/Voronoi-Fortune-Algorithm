@@ -5,8 +5,8 @@
 #include"VEdgeNode.h"
 
 #include<limits>
-#include<queue>
 #include<map>
+#include<queue>
 #include<memory>
 using namespace std;
 
@@ -34,6 +34,17 @@ shared_ptr<VNode> ProcessCircleEvent(shared_ptr<VCircleEvent> e, shared_ptr<VNod
 shared_ptr<VCircleEvent> CircleCheckDataNode(VDataNode n, double ys);
 void CleanUpTree(shared_ptr<VNode> Root);
 VoronoiGraph ComputeVoronoiGraph(vector<Point> Datapoints);
+
+bool Unique_Vertices(Point first, Point second)
+{
+	return ((first.data[0] == second.data[0]) && (first.data[1] == second.data[1]));
+}
+
+bool Unique_Edges(VoronoiEdge first, VoronoiEdge second)
+{
+	return ((first.LeftData.Equals(second.LeftData.data)) && (first.RightData.Equals(second.RightData.data))
+		&& (first.VVertexA.Equals(second.VVertexA.data)) && (first.VVertexB.Equals(second.VVertexB.data)));
+}
 
 double Distance(double x1, double y1, double x2, double y2)
 {
@@ -108,7 +119,7 @@ double ParabolicCut(double x1, double y1, double x2, double y2, double ys)
 
 VoronoiGraph ComputeVoronoiGraph(vector<Point> Datapoints)
 {
-	priority_queue<VDataEvent> PQ;
+	priority_queue<shared_ptr<VEvent>> PQ;
 	map<VDataNode, VCircleEvent> CurrentCircles;
 	shared_ptr<VoronoiGraph> VG;
 	shared_ptr<VNode>  RootNode = NULL;
@@ -116,21 +127,21 @@ VoronoiGraph ComputeVoronoiGraph(vector<Point> Datapoints)
 	for (vector<Point>::iterator i = Datapoints.begin(); i != Datapoints.end(); i++)
 	{
 		VDataEvent vd(*i);
-		PQ.push(vd);
+		shared_ptr<VEvent> vev = make_shared<VEvent>(vd);
+		PQ.push(vev);
 	}
 	while (PQ.size() > 0)
 	{
-		VDataEvent temp = PQ.top();
-		shared_ptr<VEvent> VE = make_shared<VEvent>(temp);
+		shared_ptr<VEvent> VE = PQ.top();
 		vector<shared_ptr<VDataNode>> CircleCheckList;
 
-		if (typeid(VE) == typeid(VDataEvent))
+		if (typeid(*VE) == typeid(VDataEvent))
 		{
 			RootNode = ProcessDataEvent(static_pointer_cast<VDataEvent>(VE), RootNode, *VG, VE->Y, CircleCheckList);
 		}
-		else if (typeid(VE) == typeid(VCircleEvent))
+		else if (typeid(*VE) == typeid(VCircleEvent))
 		{
-			shared_ptr<VCircleEvent> VE_temp = make_shared<VCircleEvent>(VE);
+			shared_ptr<VCircleEvent> VE_temp = dynamic_pointer_cast<VCircleEvent>(VE);
 			CurrentCircles.erase(VE_temp->NodeN);
 			if (!VE_temp->Valid)
 				continue;
@@ -157,7 +168,9 @@ VoronoiGraph ComputeVoronoiGraph(vector<Point> Datapoints)
 			shared_ptr<VCircleEvent> VCE = CircleCheckDataNode(VD, VE->Y);
 			if (VCE != NULL)
 			{
-				PQ.push(*static_pointer_cast<VDataEvent>(VCE));
+		//		shared_ptr<VDataEvent> a = static_pointer_cast<VDataEvent>(VCE);
+				shared_ptr<VEvent> a = static_pointer_cast<VEvent>(VCE);
+				PQ.push(a);
 				CurrentCircles[VD] = *VCE;
 			}
 		}
@@ -177,7 +190,7 @@ VoronoiGraph ComputeVoronoiGraph(vector<Point> Datapoints)
 	}
 	CleanUpTree(RootNode);
 
-	for (unordered_set<VoronoiEdge>::iterator i = VG->Edges.begin(); i != VG->Edges.end(); i++)//(VoronoiEdge VE in VG.Edges)
+	for (list<VoronoiEdge>::iterator i = VG->Edges.begin(); i != VG->Edges.end(); i++)//(VoronoiEdge VE in VG.Edges)
 	{
 		VoronoiEdge VE = *i;
 		if (VE.Done)
@@ -195,7 +208,7 @@ VoronoiGraph ComputeVoronoiGraph(vector<Point> Datapoints)
 	}
 
 	vector<VoronoiEdge> MinuteEdges;
-	for (unordered_set<VoronoiEdge>::iterator i = VG->Edges.begin(); i != VG->Edges.end(); i++)
+	for (list<VoronoiEdge>::iterator i = VG->Edges.begin(); i != VG->Edges.end(); i++)
 	{
 		VoronoiEdge VE = *i;
 
@@ -203,7 +216,7 @@ VoronoiGraph ComputeVoronoiGraph(vector<Point> Datapoints)
 		{
 			MinuteEdges.push_back(VE);
 			// prevent rounding errors from expanding to holes
-			for (unordered_set<VoronoiEdge>::iterator i2 = VG->Edges.begin(); i2 != VG->Edges.end(); i2++)
+			for (list<VoronoiEdge>::iterator i2 = VG->Edges.begin(); i2 != VG->Edges.end(); i2++)
 			{
 				VoronoiEdge VE2 = *i2;
 				if (VE2.VVertexA.Equals(VE.VVertexA.data))
@@ -216,8 +229,11 @@ VoronoiGraph ComputeVoronoiGraph(vector<Point> Datapoints)
 	}
 
 	for (vector<VoronoiEdge>::iterator k = MinuteEdges.begin(); k != MinuteEdges.end(); k++)
-		VG->Edges.erase(*k);
-
+	{
+		for (list<VoronoiEdge>::iterator oo = VG->Edges.begin(); oo != VG->Edges.end(); oo++)
+			if (oo->LeftData.Equals(k->LeftData.data) && oo->RightData.Equals(k->RightData.data) && oo->VVertexA.Equals(k->VVertexA.data) && oo->VVertexB.Equals(k->VVertexB.data))
+				VG->Edges.erase(oo);
+	}
 	return *VG;
 }
 
@@ -350,11 +366,12 @@ shared_ptr<VDataNode> FindDataNode(shared_ptr<VNode> Root, double ys, double x)
 	shared_ptr<VNode> C = Root;
 	do
 	{
-		if (typeid(C) == typeid(VDataNode))
+		if (typeid(*C) == typeid(VDataNode))
 		{
 			return static_pointer_cast<VDataNode>(C);
 		}
-		if (make_shared<VEdgeNode>(C).get()->Cut(ys, x) < 0)
+		shared_ptr<VEdgeNode> Cc = dynamic_pointer_cast<VEdgeNode>(C);
+		if (Cc->Cut(ys, x) < 0)
 			C = C->Left();
 		else
 			C = C->Right();
@@ -374,7 +391,7 @@ shared_ptr<VNode> ProcessDataEvent(shared_ptr<VDataEvent> e, shared_ptr<VNode> R
 	}
 
 	//1. Find the node to be replaced
-	shared_ptr<VNode> C = FindDataNode(Root, ys, e->DataPoint.data[0]);
+	shared_ptr<VNode> C =  FindDataNode(Root, ys, e->DataPoint.data[0]);
 
 	//2. Create the subtree (ONE Edge, but two VEdgeNodes)
 	shared_ptr<VoronoiEdge> VE = make_shared<VoronoiEdge>();
@@ -384,7 +401,8 @@ shared_ptr<VNode> ProcessDataEvent(shared_ptr<VDataEvent> e, shared_ptr<VNode> R
 	VE->RightData = e->DataPoint;
 	VE->VVertexA = VVUnknown();
 	VE->VVertexB = VVUnknown();
-	VG.Edges.insert(*VE);
+	VG.Edges.push_back(*VE);
+	VG.Edges.unique(Unique_Edges);
 
 	shared_ptr<VNode> SubRoot;
 	if (abs(VE->LeftData.data[1] - VE->RightData.data[1]) < 1e-10)
@@ -445,7 +463,8 @@ shared_ptr<VNode> ProcessCircleEvent(shared_ptr<VCircleEvent> e, shared_ptr<VNod
 
 	//1. Create the new Vertex
 	Point VNew(e->Center.data[0], e->Center.data[1]);
-	VG->Vertices.insert(VNew);
+	VG->Vertices.push_back(VNew);
+	VG->Vertices.unique(Unique_Vertices);
 
 	//2. Find out if a or c are in a distand part of the tree (the other is then b's sibling) and assign the new vertex
 	if (eu->Left() == b) // c is sibling
@@ -469,7 +488,8 @@ shared_ptr<VNode> ProcessCircleEvent(shared_ptr<VCircleEvent> e, shared_ptr<VNod
 	VE.LeftData = a->DataPoint;
 	VE.RightData = c->DataPoint;
 	VE.AddVertex(VNew);
-	VG.get()->Edges.insert(VE);
+	VG->Edges.push_back(VE);
+	VG->Edges.unique(Unique_Edges);
 
 	shared_ptr<VEdgeNode> VEN = make_shared<VEdgeNode>(VE, false);
 	VEN->Left(eo->Left());
@@ -493,7 +513,7 @@ shared_ptr<VCircleEvent> CircleCheckDataNode(VDataNode n, double ys)
 		return NULL;
 
 	Point Center = CircumCircleCenter(l->DataPoint, n.DataPoint, r->DataPoint);
-	shared_ptr<VCircleEvent> VC = make_shared<VCircleEvent>();
+	shared_ptr<VCircleEvent> VC;
 	VC->NodeN = n;
 	VC->NodeL = *l;
 	VC->NodeR = *r;

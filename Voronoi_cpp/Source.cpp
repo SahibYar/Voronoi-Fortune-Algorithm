@@ -16,12 +16,8 @@ int main()
 
 	VoronoiGraph Result = ComputeVoronoiGraph(DataPoints);
 
-	/*
-	unordered_set<Point> Vertices;
-	unordered_set<VoronoiEdge> Edges;
-	*/
 	cout << "\t\tVertices";
-	for (unordered_set<Point>::iterator i = Result.Vertices.begin(); i != Result.Vertices.end(); i++)
+	for (list<Point>::iterator i = Result.Vertices.begin(); i != Result.Vertices.end(); i++)
 		cout << "(" << i->data[0] << ", " << i->data[1] << ")\n";
 	return 0;
 }
