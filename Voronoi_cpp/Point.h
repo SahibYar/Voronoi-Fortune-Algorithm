@@ -1,6 +1,5 @@
-#include<vector>
 #include<string>
-#include<iostream>
+#include<vector>
 using namespace std;
 
 #ifndef POINT_H
@@ -66,7 +65,7 @@ public:
 	/// <param name="r">The scalar</param>
 	void Multiply(double r)
 	{
-		for (int i = 0; i < data.size(); i++) data.at(i) *= r;
+		for (unsigned int i = 0; i < data.size(); i++) data.at(i) *= r;
 	}
 
 	static double Distance(Point a, Point b)
@@ -86,7 +85,7 @@ public:
 	string ToString()
 	{
 		string s = "(";
-		for (int i = 0; i < data.size(); i++)
+		for (unsigned int i = 0; i < data.size(); i++)
 		{
 			s += to_string(data.at(i));
 			if (i == data.size() - 1)
@@ -117,7 +116,7 @@ public:
 			throw new exception("Points of different dimensions.\n");
 		
 		Point p(data.size());
-		for (int i = 0; i < data.size(); i++)
+		for (unsigned int i = 0; i < data.size(); i++)
 		{
 			p.data.at(i) = data.at(i) + b.data.at(i);
 			data.at(i) += b.data.at(i);
@@ -168,7 +167,7 @@ public:
 			throw new exception("Points of different dimensions.\n");
 
 		Point p(data.size());
-		for (int i = 0; i < data.size(); i++)
+		for (unsigned int i = 0; i < data.size(); i++)
 		{
 			p.data.at(i) = data.at(i) - b.data.at(i);
 			data.at(i) -= b.data.at(i);

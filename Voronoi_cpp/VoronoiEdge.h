@@ -1,45 +1,66 @@
+#pragma once
 
-#include<unordered_set>
-#include"Point.h"
-
-class VoronoiGraph
-{
-public:
-	unordered_set<Point> Vertices;
-	unordered_set<VoronoiEdge> Edges;
-};
+#ifndef VORONOIEDGE_H
+#define VORONOIEDGE_H
 
 class VoronoiEdge
 {
 public:
 	bool Done = false;
-	Point RightData, LeftData;
-	Point VVertexA = Fortune::VVUnknown(), VVertexB = Fortune::VVUnknown();
+	Point RightData;
+	Point LeftData;
+	Point VVertexA;
+	Point VVertexB;
+
+	VoronoiEdge()
+	{
+		Done = false;
+		Point p(NAN, NAN);
+		RightData = p;
+		LeftData = p;
+		VVertexA = p;
+		VVertexB = p;
+	}
+
+	VoronoiEdge operator=(const VoronoiEdge& other)
+	{
+		Done = other.Done;
+		RightData = other.RightData;
+		LeftData = other.LeftData;
+		VVertexA = other.VVertexA;
+		VVertexB = other.VVertexB;
+	}
 
 	void AddVertex(Point V)
 	{
-		if (VVertexA.Equals(Fortune::VVUnknown().data))
+		Point p(NAN, NAN);
+		if (VVertexA.Equals(p.data))
 			VVertexA = V;
-		else if (VVertexB.Equals(Fortune::VVUnknown().data))
+		else if (VVertexB.Equals(p.data))
 			VVertexB = V;
 		else throw new exception("Tried to add third vertex!");
 	}
 
 	bool IsInfinite()
 	{
-		return (VVertexA.Equals(Fortune::VVinfinite().data)) && (VVertexB.Equals(Fortune::VVinfinite().data));
+		Point p(numeric_limits<double>::infinity(), numeric_limits<double>::infinity());
+		return (VVertexA.Equals(p.data)) && (VVertexB.Equals(p.data));
 	}
-	
+
 	bool IsPartlyInfinite()
 	{
-		return VVertexA.Equals(Fortune::VVinfinite().data) || VVertexB.Equals(Fortune::VVinfinite().data);
+		Point p(numeric_limits<double>::infinity(), numeric_limits<double>::infinity());
+		return VVertexA.Equals(p.data) || VVertexB.Equals(p.data);
 	}
 
 	Point FixedPointI()
 	{
-		if (IsInfinite())
+		if (this->IsInfinite())
 			return 0.5 * (LeftData.data[0] + RightData.data[0] + LeftData.data[1] + RightData.data[1]);
-		if (!VVertexA.Equals(Fortune::VVinfinite().data)) return VVertexA;
+
+		Point p(numeric_limits<double>::infinity(), numeric_limits<double>::infinity());
+		if (!VVertexA.Equals(p.data))
+			return VVertexA;
 		else return VVertexB;
 	}
 
@@ -71,3 +92,5 @@ public:
 		return sqrt(Point::Distance(VVertexA, VVertexB));
 	}
 };
+
+#endif

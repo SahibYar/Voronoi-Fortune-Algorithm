@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="MathTools">
+    <Position X="7" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAA=</HashCode>
+      <FileName>Fortune.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VoronoiGraph">
+    <Position X="1.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAA=</HashCode>
+      <FileName>Fortune.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VNode" Collapsed="true">
+    <Position X="13.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAQAACAAAgAAAAAQAAAAAAAAAABCAKgABEQCCA=</HashCode>
+      <FileName>Fortune.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Fortune">
+    <Position X="5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAAACAAAAAQAAAQEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Fortune.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Point" Collapsed="true">
+    <Position X="1" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAgAAEgAABAAAAEAAAQABAAAAwAAAAEAA=</HashCode>
+      <FileName>Point.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VoronoiEdge">
+    <Position X="17.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAEACAAAEAAAIBAAEAABAAIAAACAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Fortune.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="RightData" />
+      <Field Name="LeftData" />
+      <Field Name="VVertexA" />
+      <Field Name="VVertexB" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="VEdgeNode">
+    <Position X="14.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAABAAAAAAAAEAAAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Fortune.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="Edge" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="VDataNode">
+    <Position X="12.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAABA=</HashCode>
+      <FileName>Fortune.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="DataPoint" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="VCircleEvent">
+    <Position X="12" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAABAABAAIYEA=</HashCode>
+      <FileName>Fortune.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="NodeN" />
+      <Field Name="NodeL" />
+      <Field Name="NodeR" />
+      <Field Name="Center" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="VDataEvent">
+    <Position X="9.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAYAA=</HashCode>
+      <FileName>Fortune.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="DataPoint" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="VEvent">
+    <Position X="10.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAYAA=</HashCode>
+      <FileName>Fortune.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

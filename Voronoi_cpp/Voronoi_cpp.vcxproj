@@ -103,6 +103,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <ShowIncludes>true</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -137,6 +138,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <ShowIncludes>true</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -146,9 +148,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Fortune.h" />
-    <ClInclude Include="FortuneVoronoi.h" />
     <ClInclude Include="Point.h" />
+    <ClInclude Include="Utility.h" />
+    <ClInclude Include="VCircleEvent.h" />
+    <ClInclude Include="VDataEvent.h" />
+    <ClInclude Include="VDataNode.h" />
+    <ClInclude Include="VEdgeNode.h" />
+    <ClInclude Include="VEvent.h" />
+    <ClInclude Include="VNode.h" />
+    <ClInclude Include="VoronoiEdge.h" />
+    <ClInclude Include="VoronoiGraph.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
