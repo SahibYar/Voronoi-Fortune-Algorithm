@@ -30,7 +30,7 @@ shared_ptr<VDataNode> LeftDataNode(shared_ptr<VDataNode> Current);
 shared_ptr<VDataNode> RightDataNode(shared_ptr<VDataNode> Current);
 shared_ptr<VEdgeNode> EdgeToRightDataNode(shared_ptr<VDataNode> Current);
 shared_ptr<VDataNode> FindDataNode(shared_ptr<VNode> Root, double ys, double x);
-shared_ptr<VNode> ProcessDataEvent(shared_ptr<VDataEvent> e, shared_ptr<VNode> Root, VoronoiGraph VG, double ys, vector<shared_ptr<VDataNode>>& CircleCheckList);
+shared_ptr<VNode> ProcessDataEvent(shared_ptr<VDataEvent> e, shared_ptr<VNode> Root, shared_ptr<VoronoiGraph> VG, double ys, vector<shared_ptr<VDataNode>>& CircleCheckList);
 shared_ptr<VNode> ProcessCircleEvent(shared_ptr<VCircleEvent> e, shared_ptr<VNode> Root, shared_ptr<VoronoiGraph> VG, double ys, vector<shared_ptr<VDataNode>>& CircleCheckList);
 shared_ptr<VCircleEvent> CircleCheckDataNode(VDataNode n, double ys);
 void CleanUpTree(shared_ptr<VNode> Root);
@@ -140,7 +140,7 @@ VoronoiGraph ComputeVoronoiGraph(vector<Point> Datapoints)
 
 		if (typeid(*VE) == typeid(VDataEvent))
 		{
-			RootNode = ProcessDataEvent(static_pointer_cast<VDataEvent>(VE), RootNode, *VG, VE->YY, CircleCheckList);
+			RootNode = ProcessDataEvent(static_pointer_cast<VDataEvent>(VE), RootNode, VG, VE->YY, CircleCheckList);
 		}
 		else if (typeid(*VE) == typeid(VCircleEvent))
 		{
@@ -384,7 +384,7 @@ shared_ptr<VDataNode> FindDataNode(shared_ptr<VNode> Root, double ys, double x)
 /// <summary>
 /// Will return the new root (unchanged except in start-up)
 /// </summary>
-shared_ptr<VNode> ProcessDataEvent(shared_ptr<VDataEvent> e, shared_ptr<VNode> Root, VoronoiGraph VG, double ys, vector<shared_ptr<VDataNode>>& CircleCheckList)
+shared_ptr<VNode> ProcessDataEvent(shared_ptr<VDataEvent> e, shared_ptr<VNode> Root, shared_ptr<VoronoiGraph> VG, double ys, vector<shared_ptr<VDataNode>>& CircleCheckList)
 {
 	if (Root == NULL)
 	{
@@ -404,8 +404,8 @@ shared_ptr<VNode> ProcessDataEvent(shared_ptr<VDataEvent> e, shared_ptr<VNode> R
 	VE->RightData = e->DataPoint;
 	VE->VVertexA = VVUnknown();
 	VE->VVertexB = VVUnknown();
-	VG.Edges.push_back(*VE);
-	VG.Edges.unique(Unique_Edges);
+	VG->Edges.push_back(*VE);
+//	VG->Edges.unique(Unique_Edges);
 
 	shared_ptr<VNode> SubRoot;
 	if (abs(VE->LeftData.data[1] - VE->RightData.data[1]) < 1e-10)
@@ -467,7 +467,7 @@ shared_ptr<VNode> ProcessCircleEvent(shared_ptr<VCircleEvent> e, shared_ptr<VNod
 	//1. Create the new Vertex
 	Point VNew(e->Center.data[0], e->Center.data[1]);
 	VG->Vertices.push_back(VNew);
-	VG->Vertices.unique(Unique_Vertices);
+//	VG->Vertices.unique(Unique_Vertices);
 
 	//2. Find out if a or c are in a distand part of the tree (the other is then b's sibling) and assign the new vertex
 	if (eu->Left() == b) // c is sibling
@@ -492,7 +492,7 @@ shared_ptr<VNode> ProcessCircleEvent(shared_ptr<VCircleEvent> e, shared_ptr<VNod
 	VE.RightData = c->DataPoint;
 	VE.AddVertex(VNew);
 	VG->Edges.push_back(VE);
-	VG->Edges.unique(Unique_Edges);
+//	VG->Edges.unique(Unique_Edges);
 
 	shared_ptr<VEdgeNode> VEN = make_shared<VEdgeNode>(VE, false);
 	VEN->Left(eo->Left());
