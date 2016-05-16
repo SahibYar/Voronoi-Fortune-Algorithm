@@ -13,11 +13,9 @@ public:
 	VDataEvent(Point DP)
 	{ 
 		DataPoint = DP; 
-		X = DP.data[0];
-		Y = DP.data[1];
+		XX = DP.data[0];
+		YY = DP.data[1];
 	}
-	double Yy() { return DataPoint.data[1]; }
-	double Xx() { return DataPoint.data[0]; }
 };
 
 #endif

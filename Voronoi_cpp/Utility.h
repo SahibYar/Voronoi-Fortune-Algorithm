@@ -2,6 +2,7 @@
 #include"VEdgeNode.h"
 #include"VDataEvent.h"
 #include"VCircleEvent.h"
+#include"Compare.h"
 #include"VEdgeNode.h"
 
 #include<limits>
@@ -119,7 +120,8 @@ double ParabolicCut(double x1, double y1, double x2, double y2, double ys)
 
 VoronoiGraph ComputeVoronoiGraph(vector<Point> Datapoints)
 {
-	priority_queue<shared_ptr<VEvent>> PQ;
+//	priority_queue<shared_ptr<VEvent>> PQ;
+	priority_queue<shared_ptr<VEvent>, vector<shared_ptr<VEvent>>, Compare> PQ;
 	map<VDataNode, VCircleEvent> CurrentCircles;
 	shared_ptr<VoronoiGraph> VG = make_shared<VoronoiGraph>();
 	shared_ptr<VNode>  RootNode = NULL;
@@ -138,7 +140,7 @@ VoronoiGraph ComputeVoronoiGraph(vector<Point> Datapoints)
 
 		if (typeid(*VE) == typeid(VDataEvent))
 		{
-			RootNode = ProcessDataEvent(static_pointer_cast<VDataEvent>(VE), RootNode, *VG, VE->Y, CircleCheckList);
+			RootNode = ProcessDataEvent(static_pointer_cast<VDataEvent>(VE), RootNode, *VG, VE->YY, CircleCheckList);
 		}
 		else if (typeid(*VE) == typeid(VCircleEvent))
 		{
@@ -146,7 +148,7 @@ VoronoiGraph ComputeVoronoiGraph(vector<Point> Datapoints)
 			CurrentCircles.erase(VE_temp->NodeN);
 			if (!VE_temp->Valid)
 				continue;
-			RootNode = ProcessCircleEvent(static_pointer_cast<VCircleEvent>(VE), RootNode, VG, VE->Y, CircleCheckList);
+			RootNode = ProcessCircleEvent(static_pointer_cast<VCircleEvent>(VE), RootNode, VG, VE->YY, CircleCheckList);
 		}
 		else
 		{
@@ -166,7 +168,7 @@ VoronoiGraph ComputeVoronoiGraph(vector<Point> Datapoints)
 				CurrentCircles[VD].Valid = false;
 				CurrentCircles.erase(VD);
 			}
-			shared_ptr<VCircleEvent> VCE = CircleCheckDataNode(VD, VE->Y);
+			shared_ptr<VCircleEvent> VCE = CircleCheckDataNode(VD, VE->YY);
 			if (VCE != NULL)
 			{
 		//		shared_ptr<VDataEvent> a = static_pointer_cast<VDataEvent>(VCE);
@@ -183,8 +185,8 @@ VoronoiGraph ComputeVoronoiGraph(vector<Point> Datapoints)
 			{
 
 				VCircleEvent VCE = i->second;
-				if (Distance(DP.data[0], DP.data[1], VCE.Center.data[0], VCE.Center.data[1]) < VCE.Y() - VCE.Center.data[1]
-					&& abs(Distance(DP.data[0], DP.data[1], VCE.Center.data[0], VCE.Center.data[1]) - (VCE.Y() - VCE.Center.data[1])) > 1e-10)
+				if (Distance(DP.data[0], DP.data[1], VCE.Center.data[0], VCE.Center.data[1]) < VCE.YY - VCE.Center.data[1]
+					&& abs(Distance(DP.data[0], DP.data[1], VCE.Center.data[0], VCE.Center.data[1]) - (VCE.YY - VCE.Center.data[1])) > 1e-10)
 					VCE.Valid = false;
 			}
 		}

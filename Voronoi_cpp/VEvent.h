@@ -6,19 +6,19 @@
 class VEvent
 {
 public:
-	double Y;
-	double X;
+	double XX;
+	double YY;
 
 	int CompareTo(VEvent obj)
 	{
-		if (Y > obj.Y)
+		if (YY > obj.YY)
 			return 1;
-		else if (Y < obj.Y)
+		else if (YY < obj.YY)
 			return -1;
 
-		if (X > obj.X)
+		if (XX > obj.XX)
 			return 1;
-		else if (X == obj.X)
+		else if (XX == obj.XX)
 			return 0;
 		else
 			return -1;
