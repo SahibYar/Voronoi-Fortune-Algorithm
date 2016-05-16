@@ -177,11 +177,11 @@ VoronoiGraph ComputeVoronoiGraph(vector<Point> Datapoints)
 				CurrentCircles[VD] = *VCE;
 			}
 		}
-		if (typeid(VE) == typeid(VDataEvent))
+		if (typeid(*VE) == typeid(VDataEvent))
 		{
 			VDataEvent VDE_temp = *static_pointer_cast<VDataEvent>(VE);
 			Point DP = VDE_temp.DataPoint;
-			for (map<VDataNode, VCircleEvent>::iterator i; i != CurrentCircles.end(); i++)
+			for (map<VDataNode, VCircleEvent>::iterator i = CurrentCircles.begin(); i != CurrentCircles.end(); i++)
 			{
 
 				VCircleEvent VCE = i->second;

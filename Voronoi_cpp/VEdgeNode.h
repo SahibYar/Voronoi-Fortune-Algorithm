@@ -11,10 +11,10 @@ public:
 	///	VEdgeNode(){ }
 	VoronoiEdge Edge;
 	bool Flipped;
-	VEdgeNode(VoronoiEdge E, bool Flipped)
+	VEdgeNode(VoronoiEdge E, bool Fd)
 	{
 		Edge = E;
-		Flipped = Flipped;
+		Flipped = Fd;
 	}
 	double Cut(double ys, double x)
 	{
