@@ -174,5 +174,11 @@ public:
 		}
 		return p;
 	}
+
+	Point operator=(const Point& other)
+	{
+		data = other.data;
+		return *this;
+	}
 };
 #endif

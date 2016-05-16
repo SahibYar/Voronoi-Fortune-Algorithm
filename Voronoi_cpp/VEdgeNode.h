@@ -16,6 +16,12 @@ public:
 		Edge = E;
 		Flipped = Fd;
 	}
+
+	VEdgeNode operator=(const VEdgeNode& other)
+	{
+		Edge = other.Edge;
+		Flipped = other.Flipped;
+	}
 	double Cut(double ys, double x)
 	{
 		if (!Flipped)

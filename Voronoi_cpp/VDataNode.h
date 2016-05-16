@@ -17,6 +17,13 @@ public:
 		Point p(NAN, NAN);
 		DataPoint = p;
 	}
+
+	VDataNode operator=(const VDataNode& other)
+	{
+		DataPoint = other.DataPoint;
+		return *this;
+	}
+
 	bool operator<(const VDataNode& other) const
 	{
 		if (DataPoint.data[0] == other.DataPoint.data[0])

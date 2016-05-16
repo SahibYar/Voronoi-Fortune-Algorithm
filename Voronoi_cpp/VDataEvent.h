@@ -10,6 +10,11 @@ class VDataEvent : public VEvent
 {
 public:
 	Point DataPoint;
+	VDataEvent operator=(const VDataEvent& other)
+	{
+		DataPoint = other.DataPoint;
+	}
+
 	VDataEvent(Point DP)
 	{ 
 		DataPoint = DP; 

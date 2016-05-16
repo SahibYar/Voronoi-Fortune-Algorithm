@@ -148,7 +148,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="BinaryPriorityQueue.h" />
     <ClInclude Include="Compare.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Utility.h" />

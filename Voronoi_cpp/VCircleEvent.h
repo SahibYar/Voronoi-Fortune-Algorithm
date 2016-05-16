@@ -12,6 +12,15 @@ class VCircleEvent : public VEvent
 public:
 	VDataNode NodeN, NodeL, NodeR;
 	Point Center;
+	VCircleEvent operator=(const VCircleEvent& other)
+	{
+		NodeN = other.NodeN;
+		NodeL = other.NodeL;
+		NodeR = other.NodeL;
+		Center = other.Center;
+		Valid = other.Valid;
+		return *this;
+	}
 
 	VCircleEvent()
 	{

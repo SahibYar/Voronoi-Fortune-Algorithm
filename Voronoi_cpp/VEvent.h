@@ -23,6 +23,12 @@ public:
 		else
 			return -1;
 	}
+	VEvent operator=(const VEvent& other)
+	{
+		XX = other.XX;
+		YY = other.YY;
+		return *this;
+	}
 	virtual ~VEvent() {  }
 };
 
