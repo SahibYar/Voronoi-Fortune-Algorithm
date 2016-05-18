@@ -12,23 +12,45 @@ class VNode : public enable_shared_from_this<VNode>
 private:
 	shared_ptr<VNode> _Parent; shared_ptr<VNode> _Left; shared_ptr<VNode> _Right;
 public:
-	void Parent(shared_ptr<VNode> p) { _Parent = p; }
+	void Parent(shared_ptr<VNode> p) 
+	{ 
+		if (p != NULL)
+			_Parent = p; 
+	}
 	shared_ptr<VNode> Parent() { return _Parent; }
 
-	void Left(shared_ptr<VNode> p) { _Left = p; p->Parent(shared_from_this()); }
+	void Left(shared_ptr<VNode> p)
+	{
+		if (p != NULL)
+		{
+			_Left = p;
+			p->Parent(shared_from_this());
+		}
+	}
 	shared_ptr<VNode> Left() { return _Left; }
 
-	void Right(shared_ptr<VNode> p) { _Right = p; p->Parent(shared_from_this()); }
+	void Right(shared_ptr<VNode> p) 
+	{ 
+		if (p != NULL)
+		{
+			_Right = p;
+			p->Parent(shared_from_this());
+		}
+	}
 	shared_ptr<VNode> Right() { return _Right; }
-
+	
+	VNode()
+	{
+		_Parent = NULL; _Left = NULL; _Right = NULL;
+	}
 	void Replace(shared_ptr<VNode> ChildOld, shared_ptr<VNode> ChildNew)
 	{
-		if (_Left->Left() == ChildOld->Left() && _Left->Right() == ChildOld->Right() && _Left->Parent() == ChildOld->Parent())
-			_Left = ChildNew;
-
-		else if (_Right->Left() == ChildOld->Left() && _Right->Right() == ChildOld->Right() && _Right->Parent() == ChildOld->Parent())
-			_Right = ChildNew;
+		if (_Left == ChildOld)
+			Left(ChildNew);
+		else if (_Right == ChildOld)
+			Right(ChildNew);
 		else throw new exception("Child not found!");
+
 		ChildOld->Parent(NULL);
 	}
 	VNode operator=(const VNode& other)

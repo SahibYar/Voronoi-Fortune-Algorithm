@@ -36,13 +36,6 @@ shared_ptr<VCircleEvent> CircleCheckDataNode(VDataNode n, double ys);
 void CleanUpTree(shared_ptr<VNode> Root);
 VoronoiGraph ComputeVoronoiGraph(vector<Point> Datapoints);
 
-//bool operator==(VNode& lhs, VNode& rhs)
-//{
-//	if (lhs.Parent() == rhs.Parent() && lhs.Right() == rhs.Right() && lhs.Left() == rhs.Left())
-//		return true;
-//	return false;
-//}
-
 bool Unique_Vertices(Point first, Point second)
 {
 	return ((first.data[0] == second.data[0]) && (first.data[1] == second.data[1]));
@@ -151,7 +144,16 @@ VoronoiGraph ComputeVoronoiGraph(vector<Point> Datapoints)
 		else if (typeid(*VE) == typeid(VCircleEvent))
 		{
 			shared_ptr<VCircleEvent> VE_temp = dynamic_pointer_cast<VCircleEvent>(VE);
-			CurrentCircles.erase(VE_temp->NodeN);
+			for (map<VDataNode, VCircleEvent>::iterator iii = CurrentCircles.begin(); iii != CurrentCircles.end();iii++)
+			{
+				VDataNode temp_key = iii->first;
+				if (temp_key.DataPoint.Equals(VE_temp->NodeN.DataPoint.data) && temp_key.Left() == VE_temp->NodeN.Left() && temp_key.Right() == VE_temp->NodeN.Right() && temp_key.Parent() == VE_temp->NodeN.Parent())
+				{
+					CurrentCircles.erase(VE_temp->NodeN);
+					goto here;
+				}
+			}
+	here:
 			if (!VE_temp->Valid)
 				continue;
 			RootNode = ProcessCircleEvent(static_pointer_cast<VCircleEvent>(VE), RootNode, VG, VE->YY, CircleCheckList);
@@ -171,13 +173,16 @@ VoronoiGraph ComputeVoronoiGraph(vector<Point> Datapoints)
 			map<VDataNode, VCircleEvent>::iterator it = CurrentCircles.find(VD);
 			if (it != CurrentCircles.end())
 			{
-				CurrentCircles[VD].Valid = false;
-				CurrentCircles.erase(VD);
+				VDataNode temp_key = it->first;
+				if (temp_key.Left() == VD.Left() && temp_key.Parent() == VD.Parent() && temp_key.Right() == VD.Right())
+				{
+					CurrentCircles[VD].Valid = false;
+					CurrentCircles.erase(VD);
+				}
 			}
 			shared_ptr<VCircleEvent> VCE = CircleCheckDataNode(VD, VE->YY);
 			if (VCE != NULL)
 			{
-	//			shared_ptr<VDataEvent> a = static_pointer_cast<VDataEvent>(VCE);
 				shared_ptr<VEvent> a = static_pointer_cast<VEvent>(VCE);
 				PQ.push(a);
 				CurrentCircles[VD] = *VCE;
@@ -189,7 +194,6 @@ VoronoiGraph ComputeVoronoiGraph(vector<Point> Datapoints)
 			Point DP = VDE_temp.DataPoint;
 			for (map<VDataNode, VCircleEvent>::iterator i = CurrentCircles.begin(); i != CurrentCircles.end(); i++)
 			{
-
 				VCircleEvent VCE = i->second;
 				if (Distance(DP.data[0], DP.data[1], VCE.Center.data[0], VCE.Center.data[1]) < VCE.YY - VCE.Center.data[1]
 					&& abs(Distance(DP.data[0], DP.data[1], VCE.Center.data[0], VCE.Center.data[1]) - (VCE.YY - VCE.Center.data[1])) > 1e-10)
@@ -451,7 +455,7 @@ shared_ptr<VNode> ProcessDataEvent(shared_ptr<VDataEvent> e, shared_ptr<VNode> R
 	return Root;
 }
 
-shared_ptr<VNode> ProcessCircleEvent(shared_ptr<VCircleEvent> e, shared_ptr<VNode> Root, shared_ptr<VoronoiGraph> VG, double ys, vector<shared_ptr<VDataNode>>& CircleCheckList)
+shared_ptr<VNode> ProcessCircleEvent(shared_ptr<VCircleEvent> e, shared_ptr<VNode> Root, shared_ptr<VoronoiGraph>VG, double ys, vector<shared_ptr<VDataNode>>& CircleCheckList)
 {
 	shared_ptr<VDataNode> a;
 	shared_ptr<VDataNode> b;
@@ -464,9 +468,8 @@ shared_ptr<VNode> ProcessCircleEvent(shared_ptr<VCircleEvent> e, shared_ptr<VNod
 	a = LeftDataNode(b);
 	c = RightDataNode(b);
 	if (a == NULL || b->Parent() == NULL || c == NULL || !a->DataPoint.Equals(e->NodeL.DataPoint.data) || !c->DataPoint.Equals(e->NodeR.DataPoint.data))
-	{
 		return Root;
-	}
+
 	eu = static_pointer_cast<VEdgeNode>(b->Parent());
 	CircleCheckList.push_back(a);
 	CircleCheckList.push_back(c);
@@ -523,10 +526,22 @@ shared_ptr<VCircleEvent> CircleCheckDataNode(VDataNode n, double ys)
 		return NULL;
 
 	Point Center = CircumCircleCenter(l->DataPoint, n.DataPoint, r->DataPoint);
-	shared_ptr<VCircleEvent> VC;
+	shared_ptr<VCircleEvent> VC = make_shared<VCircleEvent>();
 	VC->NodeN = n;
+	VC->NodeN.Parent(n.Parent());
+	VC->NodeN.Left(n.Left());
+	VC->NodeN.Right(n.Right());
+
 	VC->NodeL = *l;
+	VC->NodeL.Left(l->Left());
+	VC->NodeL.Right(l->Right());
+	VC->NodeL.Parent(l->Parent());
+
 	VC->NodeR = *r;
+	VC->NodeR.Left(r->Left());
+	VC->NodeR.Right(r->Right());
+	VC->NodeR.Parent(r->Parent());
+
 	VC->Center = Center;
 	VC->Valid = true;
 	if (VC->Y() > ys || abs(VC->Y() - ys) < 1e-10)
