@@ -468,9 +468,12 @@ shared_ptr<VNode> ProcessCircleEvent(shared_ptr<VCircleEvent> e, shared_ptr<VNod
 	a = LeftDataNode(b);
 	c = RightDataNode(b);
 	if (a == NULL || b->Parent() == NULL || c == NULL || !a->DataPoint.Equals(e->NodeL.DataPoint.data) || !c->DataPoint.Equals(e->NodeR.DataPoint.data))
+	{
+		CircleCheckList.empty();
 		return Root;
-
+	}
 	eu = static_pointer_cast<VEdgeNode>(b->Parent());
+	CircleCheckList.clear();
 	CircleCheckList.push_back(a);
 	CircleCheckList.push_back(c);
 
@@ -480,7 +483,7 @@ shared_ptr<VNode> ProcessCircleEvent(shared_ptr<VCircleEvent> e, shared_ptr<VNod
 	VG->Vertices.unique(Unique_Vertices);
 
 	//2. Find out if a or c are in a distand part of the tree (the other is then b's sibling) and assign the new vertex
-	if (eu->Left()->Left() == b->Left() && eu->Left()->Right() == b->Right() && eu->Left()->Parent() == b->Parent()) // c is sibling
+	if (eu->Left() == b) // c is sibling
 	{
 		eo = EdgeToRightDataNode(a);
 
@@ -497,7 +500,7 @@ shared_ptr<VNode> ProcessCircleEvent(shared_ptr<VCircleEvent> e, shared_ptr<VNod
 	eo->Edge.AddVertex(VNew);
 
 	//2. Replace eo by new Edge
-	VoronoiEdge VE;// = new VoronoiEdge();
+	VoronoiEdge VE; // = new VoronoiEdge();
 	VE.LeftData = a->DataPoint;
 	VE.RightData = c->DataPoint;
 	VE.AddVertex(VNew);
