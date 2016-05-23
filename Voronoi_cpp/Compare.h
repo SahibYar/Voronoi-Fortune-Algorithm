@@ -7,9 +7,9 @@ class Compare
 public:
 	bool operator() (shared_ptr<VEvent> a, shared_ptr<VEvent> b)
 	{
-		if (a->YY == b->YY)
-			return a->XX < b->XX;
-		return a->YY > b->YY;
+		if (a->Y() == b->Y())
+			return a->X() < b->X();
+		return a->Y() > b->Y();
 
 	}
 };

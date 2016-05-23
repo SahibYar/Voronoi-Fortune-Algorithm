@@ -1,33 +1,28 @@
+#include<memory>
 #pragma once
 
 #ifndef VEVENT_H
 #define VEVENT_H
 
-class VEvent
+class VEvent : public enable_shared_from_this<VEvent>
 {
 public:
-	double XX;
-	double YY;
+	virtual const double &Y() const = 0;
+	virtual const double &X() const = 0;
 
-	int CompareTo(VEvent obj)
+	int CompareTo(shared_ptr<VEvent> obj)
 	{
-		if (YY > obj.YY)
+		if (Y() > obj->Y())
 			return 1;
-		else if (YY < obj.YY)
+		else if (Y() < obj->Y())
 			return -1;
 
-		if (XX > obj.XX)
+		if (X() > obj->X())
 			return 1;
-		else if (XX == obj.XX)
+		else if (X() == obj->X())
 			return 0;
 		else
 			return -1;
-	}
-	VEvent operator=(const VEvent& other)
-	{
-		XX = other.XX;
-		YY = other.YY;
-		return *this;
 	}
 	virtual ~VEvent() {  }
 };

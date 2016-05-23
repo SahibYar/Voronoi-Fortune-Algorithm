@@ -9,17 +9,27 @@
 class VDataEvent : public VEvent
 {
 public:
-	Point DataPoint;
-	VDataEvent operator=(const VDataEvent& other)
-	{
-		DataPoint = other.DataPoint;
+	shared_ptr<Point> DataPoint;
+
+	VDataEvent(const shared_ptr<Point> &DP)
+	{ 
+		this->DataPoint = DP; 
 	}
 
-	VDataEvent(Point DP)
-	{ 
-		DataPoint = DP; 
-		XX = DP.data[0];
-		YY = DP.data[1];
+	virtual const double &Y() const override
+	{
+		return DataPoint->data[1];
+	}
+
+	virtual const double &X() const override
+	{
+		return DataPoint->data[0];
+	}
+
+protected:
+	shared_ptr<VDataEvent> shared_from_this()
+	{
+		return static_pointer_cast<VDataEvent>(VEvent::shared_from_this());
 	}
 };
 

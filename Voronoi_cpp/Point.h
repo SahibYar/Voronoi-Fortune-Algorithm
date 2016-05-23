@@ -104,7 +104,12 @@ public:
 	/// <returns>Bool</returns>
 	bool Equals(vector<double> p2)
 	{
-		return data == p2;
+		for (unsigned int i = 0; i < data.size(); i++)
+		{
+			if (abs(data[i] - p2[i]) > 1e-10)
+				return false;
+		}
+		return true;
 	}
 
 	/// <summary>

@@ -9,13 +9,12 @@
 class VDataNode : public VNode
 {
 public:
-	Point DataPoint;
-	VDataNode(Point dp) { DataPoint = dp; }
+	shared_ptr<Point> DataPoint;
+	VDataNode(const shared_ptr<Point> &dp) { DataPoint = dp; }
 	
 	VDataNode()
 	{
-		Point p(NAN, NAN);
-		DataPoint = p;
+		DataPoint = make_shared<Point>(NAN, NAN);
 	}
 
 	VDataNode operator=(const VDataNode& other)
@@ -26,9 +25,9 @@ public:
 
 	bool operator<(const VDataNode& other) const
 	{
-		if (DataPoint.data[0] == other.DataPoint.data[0])
-			return DataPoint.data[1] < other.DataPoint.data[1];
-		return DataPoint.data[0] < other.DataPoint.data[0];
+		if (DataPoint->data[0] == other.DataPoint->data[0])
+			return DataPoint->data[1] < other.DataPoint->data[1];
+		return DataPoint->data[0] < other.DataPoint->data[0];
 	}
 };
 

@@ -16,8 +16,8 @@ public:
 
 	VoronoiGraph()
 	{
-		Vertices.empty();
-		Edges.empty();
+		Vertices.clear();
+		Edges.clear();
 	}
 };
 

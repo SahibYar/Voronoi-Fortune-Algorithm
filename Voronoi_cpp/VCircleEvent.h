@@ -1,6 +1,7 @@
 #pragma once
 
 #include<cmath>
+#include<memory>
 #include"VEvent.h"
 #include"VDataNode.h"
 
@@ -10,8 +11,10 @@
 class VCircleEvent : public VEvent
 {
 public:
-	VDataNode NodeN, NodeL, NodeR;
-	Point Center;
+	shared_ptr<VDataNode> NodeN;
+	shared_ptr<VDataNode> NodeL;
+	shared_ptr<VDataNode> NodeR;
+	shared_ptr<Point> Center;
 	VCircleEvent operator=(const VCircleEvent& other)
 	{
 		NodeN = other.NodeN;
@@ -25,17 +28,27 @@ public:
 	VCircleEvent()
 	{
 		Point p(NAN, NAN);
-		Center = p;
+		Center = make_shared<Point>(p);
 	}
 
-	double Y()
+	virtual const double &Y() const override
 	{
-		return sqrt((Center.data[0] - NodeN.DataPoint.data[0]) * (Center.data[0] - NodeN.DataPoint.data[0]) +
-			(Center.data[1] - NodeN.DataPoint.data[1]) * (Center.data[1] - NodeN.DataPoint.data[1]));
+		return sqrt((Center->data[0] - NodeN->DataPoint->data[0]) * (Center->data[0] - NodeN->DataPoint->data[0]) +
+			(Center->data[1] - NodeN->DataPoint->data[1]) * (Center->data[1] - NodeN->DataPoint->data[1]));
 	}
 
-	double X() { return Center.data[0]; }
+	virtual const double &X() const override 
+	{ 
+		return Center->data[0]; 
+	}
 	bool Valid = true;
+
+protected:
+	shared_ptr<VCircleEvent> shared_from_this()
+	{
+		return static_pointer_cast<VCircleEvent>(VEvent::shared_from_this());
+	}
+
 };
 
 #endif

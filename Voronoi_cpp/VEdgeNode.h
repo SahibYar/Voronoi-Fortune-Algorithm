@@ -9,27 +9,30 @@ class VEdgeNode : public VNode
 {
 public:
 	///	VEdgeNode(){ }
-	VoronoiEdge Edge;
+	shared_ptr<VoronoiEdge> Edge;
 	bool Flipped;
-	VEdgeNode(VoronoiEdge E, bool Fd)
+	VEdgeNode(shared_ptr<VoronoiEdge> E, bool Fd)
 	{
 		Edge = E;
 		Flipped = Fd;
 	}
 
-	VEdgeNode operator=(const VEdgeNode& other)
+	VEdgeNode operator=(VEdgeNode& other)
 	{
+		this->Parent(other.Parent());
+		this->Left(other.Parent());
+		this->Right(other.Parent());
 		Edge = other.Edge;
 		Flipped = other.Flipped;
 	}
 	double Cut(double ys, double x)
 	{
-		if (!Flipped)
+		if (!this->Flipped)
 		{
-			double x1 = Edge.LeftData.data[0];
-			double y1 = Edge.LeftData.data[1];
-			double x2 = Edge.RightData.data[0];
-			double y2 = Edge.RightData.data[1];
+			double x1 = this->Edge->LeftData->data[0];
+			double y1 = this->Edge->LeftData->data[1];
+			double x2 = this->Edge->RightData->data[0];
+			double y2 = this->Edge->RightData->data[1];
 
 			if (abs(x1 - x2) < 1e-10 && abs(y1 - y2) < 1e-10)
 			{
@@ -55,10 +58,10 @@ public:
 			return x - xs1;
 		}
 
-		double x1 = Edge.RightData.data[0];
-		double y1 = Edge.RightData.data[1];
-		double x2 = Edge.LeftData.data[0];
-		double y2 = Edge.LeftData.data[1];
+		double x1 = this->Edge->RightData->data[0];
+		double y1 = this->Edge->RightData->data[1];
+		double x2 = this->Edge->LeftData->data[0];
+		double y2 = this->Edge->LeftData->data[1];
 
 		if (abs(x1 - x2) < 1e-10 && abs(y1 - y2) < 1e-10)
 		{
