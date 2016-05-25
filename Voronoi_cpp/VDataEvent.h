@@ -16,7 +16,7 @@ public:
 		this->DataPoint = DP; 
 	}
 
-	virtual const double &Y() const override
+	virtual double Y() const override
 	{
 		return DataPoint->data[1];
 	}

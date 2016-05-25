@@ -11,8 +11,8 @@ using namespace std;
 class VoronoiGraph
 {
 public:
-	list<Point> Vertices;
-	list<VoronoiEdge> Edges;
+	list<shared_ptr<Point>> Vertices;
+	list<shared_ptr<VoronoiEdge>> Edges;
 
 	VoronoiGraph()
 	{

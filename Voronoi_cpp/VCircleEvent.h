@@ -31,10 +31,9 @@ public:
 		Center = make_shared<Point>(p);
 	}
 
-	virtual const double &Y() const override
+	virtual double Y() const override
 	{
-		return sqrt((Center->data[0] - NodeN->DataPoint->data[0]) * (Center->data[0] - NodeN->DataPoint->data[0]) +
-			(Center->data[1] - NodeN->DataPoint->data[1]) * (Center->data[1] - NodeN->DataPoint->data[1]));
+		return Center->data[1] + sqrt(pow((Center->data[0] - NodeN->DataPoint->data[0]), 2) + pow((Center->data[1] - NodeN->DataPoint->data[1]), 2));
 	}
 
 	virtual const double &X() const override 

@@ -7,7 +7,7 @@
 class VEvent : public enable_shared_from_this<VEvent>
 {
 public:
-	virtual const double &Y() const = 0;
+	virtual double Y() const = 0;
 	virtual const double &X() const = 0;
 
 	int CompareTo(shared_ptr<VEvent> obj)

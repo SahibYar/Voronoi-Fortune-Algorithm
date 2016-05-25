@@ -23,14 +23,14 @@ public:
 		_Left = p;
 		p->Parent(shared_from_this());
 	}
-	const shared_ptr<VNode> &Left() const { return _Left; }
+	shared_ptr<VNode> Left() const { return _Left; }
 
 	void Right(const shared_ptr<VNode> &p)
 	{
 		_Right = p;
 		p->Parent(shared_from_this());
 	}
-	const shared_ptr<VNode> &Right() const { return _Right; }
+	shared_ptr<VNode> Right() const { return _Right; }
 	
 	VNode()
 	{

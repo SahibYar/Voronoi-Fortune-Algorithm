@@ -53,7 +53,13 @@ public:
 
 	Point FixedPointI()
 	{
-		if (IsInfinite()) return 0.5 * (LeftData->data[0] + RightData->data[0] + LeftData->data[1] + RightData->data[1]);
+		if (IsInfinite())
+		{
+			Point a(LeftData->Dimension());
+			for (int i = 0; i < LeftData->Dimension(); i++)
+				a.data[i] = 0.5 * (LeftData->data[i] + RightData->data[i]);
+			return a;
+		}
 		if (!(isinf(VVertexA->data[0]) && isinf(VVertexA->data[1]))) return *VVertexA;
 		else return *VVertexB;
 	}
